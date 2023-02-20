@@ -1,15 +1,12 @@
 import { Fragment } from 'react'
-import Head from 'next/head'
-import Image from 'next/image'
 import { Inter } from '@next/font/google'
-import styles from '@/styles/Home.module.css'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
-import { ChampionThumbnailHolder } from '@/components/holder/ChampionThumbnaliHolder'
-import { ChampionSelectHolder } from '@/components/holder/ChampionSelectHolder'
-import { ApolloProvider } from '@apollo/client/react'
+import { ChampionThumbnailHolder } from '@/components/holder/championThumbnaliHolder'
+import { ChampionSelectHolder } from '@/components/holder/championSelectHolder'
+import { ApolloProvider, useReactiveVar } from '@apollo/client/react'
 import client from '@/core/apollo/apollo'
-import { BLUE_TEAM, RED_TEAM } from '@/state/ui-interaction/UiState'
+import {BLUE_TEAM, RED_TEAM, selectedChampion, selectedChampionSide} from '@/state/ui-interaction/uiState'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -34,6 +31,8 @@ function classNames(...classes: any[]) {
 }
 
 export default function Home() {
+  const selectedTeam = useReactiveVar(selectedChampionSide)
+  const currentChampion = useReactiveVar(selectedChampion)
   return (
     <>
       <ApolloProvider client={client}>
@@ -195,6 +194,7 @@ export default function Home() {
               </div>
             </header>
             <main>
+              selectedTeam: { selectedTeam }, champion pair: { currentChampion[0] } { currentChampion[1] }
               <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
                 {/* Replace with your content */}
                 <div className="px-4 py-8 sm:px-0">

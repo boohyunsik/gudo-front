@@ -1,4 +1,4 @@
-import { selectedChampionSide } from '@/state/ui-interaction/UiState';
+import { selectedChampionSide } from '@/state/ui-interaction/uiState';
 import * as React from 'react';
 
 export interface Props {
