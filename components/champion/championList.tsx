@@ -10,7 +10,6 @@ import {
 import {useReactiveVar} from "@apollo/client/react";
 import {useChampionList} from "@/core/hooks/useChampionList";
 import {getSquareImageUrl} from "@/utils/utils";
-import {useChampionSpec} from "@/core/hooks/useChampionSpec";
 
 export interface Props {
 
@@ -20,7 +19,6 @@ export const ChampionList = ({}: Props) => {
     const championList = useChampionList()
     const currentChampionSide = useReactiveVar(selectedChampionSide)
     const currentChampionState = useReactiveVar(selectedChampion)
-    const stats = useReactiveVar(selectedChampionStats)
     const currentSelectedSkillList = useReactiveVar(selectedSkillList)
     const onClick = (e: any) => {
         const c = championList?.find((champion) => champion.id == e.target.id)

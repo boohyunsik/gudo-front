@@ -1,9 +1,8 @@
 import {useChampionSpec} from "@/core/hooks/useChampionSpec";
 import {ChampionSpec} from "@/core/model/champion";
-import {useState} from "react";
-import {selectedChampionStats, selectedLevel} from "@/core/state/uiState";
+import {selectedChampionStats, selectedItemList, selectedLevel} from "@/core/state/uiState";
 import {useReactiveVar} from "@apollo/client/react";
-import {calculateLinearSpec} from "@/core/engine/calculator";
+import {calculateSpec, Spec} from "@/core/engine/calculator";
 
 export interface Props {
     side: number
@@ -14,6 +13,7 @@ export const SpecItem = ({ side, championName }: Props) => {
     const championSpec: ChampionSpec | null = useChampionSpec(championName)
     const currentSelectedLevel = useReactiveVar(selectedLevel)
     const currentStat = useReactiveVar(selectedChampionStats)[side]
+    const currentItem = useReactiveVar(selectedItemList)[side]
 
     const onLevelChanged = (e: any) => {
         if (e.target.value === 0 || e.target.value === '') {
@@ -36,22 +36,22 @@ export const SpecItem = ({ side, championName }: Props) => {
                         </div>
                         <div className="grid grid-cols-2">
                             <div>
-                                hp: { calculateLinearSpec(currentStat.hp, currentStat.hpPerLevel, currentSelectedLevel[side]) }
+                                hp: { calculateSpec(currentStat.hp, currentStat.hpPerLevel, currentSelectedLevel[side], currentItem, Spec.HP) }
                             </div>
                             <div>
-                                mp: { calculateLinearSpec(currentStat.mp, currentStat.mpPerLevel, currentSelectedLevel[side]) }
+                                mp: { calculateSpec(currentStat.mp, currentStat.mpPerLevel, currentSelectedLevel[side], currentItem, Spec.MP) }
                             </div>
                             <div>
-                                공격력: { calculateLinearSpec(currentStat.attackDamage, currentStat.attackDamagePerLevel, currentSelectedLevel[side]) }
+                                공격력: { calculateSpec(currentStat.attackDamage, currentStat.attackDamagePerLevel, currentSelectedLevel[side], currentItem, Spec.ATTACK) }
                             </div>
                             <div>
-                                주문력: 0
+                                주문력: { calculateSpec(0, 0, currentSelectedLevel[side], currentItem, Spec.MAGIC) }
                             </div>
                             <div>
-                                방어력: { calculateLinearSpec(currentStat.armor, currentStat.armorPerLevel, currentSelectedLevel[side]) }
+                                방어력: { calculateSpec(currentStat.armor, currentStat.armorPerLevel, currentSelectedLevel[side], currentItem, Spec.ARMOR) }
                             </div>
                             <div>
-                                마법저항력: { calculateLinearSpec(currentStat.spellBlock, currentStat.spellBlockPerLevel, currentSelectedLevel[side]) }
+                                마법저항력: { calculateSpec(currentStat.spellBlock, currentStat.spellBlockPerLevel, currentSelectedLevel[side], currentItem, Spec.SPELL_BLOCK) }
                             </div>
                             <div>
                                 레벨 당 공격력: { currentStat.attackDamagePerLevel }

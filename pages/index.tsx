@@ -13,6 +13,7 @@ import {ChampionSelect} from "@/components/champion/championSelect";
 import {SelectedSkillHolder} from "@/components/skill/selectedSkillHolder";
 import {SpecHolder} from "@/components/stats/specHolder";
 import {StatisticHolder} from "@/components/statistic/statisticHolder";
+import {ItemSelectHolder} from "@/components/item/itemSelectHolder";
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -213,6 +214,9 @@ export default function Home() {
               </div>
               <div className="grow">
                 <SpecHolder />
+              </div>
+              <div className="grow">
+                <ItemSelectHolder />
               </div>
               <div className="grow">
                 <StatisticHolder />
