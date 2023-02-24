@@ -29,3 +29,26 @@ export type Champion = {
     attackSpeed: string
   }
 }
+
+export type ChampionSpec = {
+  armor: number
+  armorPerLevel: number
+  attackDamage: number
+  attackDamagePerLevel: number
+  attackRange: number
+  attackSpeed: number
+  attackSpeedPerLevel: number
+  crit: number
+  critPerLevel: number
+  hp: number
+  hpPerLevel: number
+  hpRegen: number
+  hpRegenPerLevel: number
+  moveSpeed: number
+  mp: number
+  mpPerLevel: number
+  mpRegen: number
+  mpRegenPerLevel: number
+  spellBlock: number
+  spellBlockPerLevel: number
+}

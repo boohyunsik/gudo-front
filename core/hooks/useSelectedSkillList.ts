@@ -1,5 +1,5 @@
 import {useReactiveVar} from "@apollo/client/react";
-import {selectedSkillList} from "@/state/ui-interaction/uiState";
+import {selectedSkillList} from "@/core/state/uiState";
 
 export const useSelectedSkillList = (team: number) => {
   const currentSkillList = useReactiveVar(selectedSkillList)

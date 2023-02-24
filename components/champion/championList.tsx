@@ -1,9 +1,10 @@
 import * as React from 'react';
-import {selectedChampion, selectedChampionSide} from "@/state/ui-interaction/uiState";
+import {selectedChampion, selectedChampionSide, selectedChampionStats} from "@/core/state/uiState";
 import {useReactiveVar} from "@apollo/client/react";
 import {useChampionList} from "@/core/hooks/useChampionList";
 import {useState} from "react";
 import {getSquareImageUrl} from "@/utils/utils";
+import {useChampionSpec, useChampionSpec2} from "@/core/hooks/useChampionSpec";
 
 export interface Props {
 
@@ -13,6 +14,8 @@ export const ChampionList = ({}: Props) => {
     const championList = useChampionList()
     const currentChampionSide = useReactiveVar(selectedChampionSide)
     const currentChampionState = useReactiveVar(selectedChampion)
+    const currentChampionStats = useReactiveVar(selectedChampionStats)
+    const { getSpecById } = useChampionSpec2()
     const onClick = (e: any) => {
         const c = championList?.find((champion) => champion.id == e.target.id)
         if (c != null) {

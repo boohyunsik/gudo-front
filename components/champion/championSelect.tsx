@@ -1,5 +1,5 @@
 import {ChampionThumbnailHolder} from "@/components/champion/championThumbnaliHolder";
-import {BLUE_TEAM, RED_TEAM} from "@/state/ui-interaction/uiState";
+import {BLUE_TEAM, RED_TEAM} from "@/core/state/uiState";
 import {ChampionList} from "@/components/champion/championList";
 
 export const ChampionSelect = () => {

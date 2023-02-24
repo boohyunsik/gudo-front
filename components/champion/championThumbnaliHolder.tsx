@@ -1,4 +1,4 @@
-import {selectedChampion, selectedChampionSide} from '@/state/ui-interaction/uiState';
+import {selectedChampion, selectedChampionSide} from '@/core/state/uiState';
 import * as React from 'react';
 import {useReactiveVar} from "@apollo/client/react";
 import {getSquareImageUrl} from "@/utils/utils";

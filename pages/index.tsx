@@ -6,11 +6,13 @@ import { ChampionThumbnailHolder } from '@/components/champion/championThumbnali
 import { ChampionList } from '@/components/champion/championList'
 import {ApolloProvider, useQuery, useReactiveVar} from '@apollo/client/react'
 import client from '@/core/apollo/client'
-import {BLUE_TEAM, RED_TEAM, selectedChampion, selectedChampionSide} from '@/state/ui-interaction/uiState'
+import {BLUE_TEAM, RED_TEAM, selectedChampion, selectedChampionSide} from '@/core/state/uiState'
 import {gql} from "@apollo/client";
 import {SkillListHolder} from "@/components/skill/skillListHolder";
 import {ChampionSelect} from "@/components/champion/championSelect";
 import {SelectedSkillHolder} from "@/components/skill/selectedSkillHolder";
+import {SpecHolder} from "@/components/spec/specHolder";
+import {StatisticHolder} from "@/components/statistic/statisticHolder";
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -208,6 +210,12 @@ export default function Home() {
                 <div className="">
                   <SelectedSkillHolder side={BLUE_TEAM} />
                 </div>
+              </div>
+              <div className="grow">
+                <SpecHolder />
+              </div>
+              <div className="grow">
+                <StatisticHolder />
               </div>
               {/* /End replace */}
             </div>
