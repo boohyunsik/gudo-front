@@ -7,7 +7,6 @@ export const useChampionList = () => {
 
   if (!result.loading) {
     const data = result.data.champion.data
-    console.log(result.data)
     return Object.keys(data).map((championName) => {
       const raw = data[championName]
       return {

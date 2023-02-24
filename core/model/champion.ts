@@ -1,4 +1,6 @@
-export type Champion = {
+export type OptionalChampion = Champion | null
+
+export interface Champion {
   key: string
   id: string
   name: string
@@ -51,4 +53,13 @@ export type ChampionSpec = {
   mpRegenPerLevel: number
   spellBlock: number
   spellBlockPerLevel: number
+}
+
+export interface CalculatedChampionSpec {
+  hp: number
+  mp: number
+  attackDamage: number
+  magic: number
+  armor: number
+  spellBlock: number
 }

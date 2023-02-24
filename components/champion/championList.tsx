@@ -1,10 +1,16 @@
 import * as React from 'react';
-import {selectedChampion, selectedChampionSide, selectedChampionStats} from "@/core/state/uiState";
+import {
+    BLUE_TEAM,
+    RED_TEAM,
+    selectedChampion,
+    selectedChampionSide,
+    selectedChampionStats,
+    selectedSkillList
+} from "@/core/state/uiState";
 import {useReactiveVar} from "@apollo/client/react";
 import {useChampionList} from "@/core/hooks/useChampionList";
-import {useState} from "react";
 import {getSquareImageUrl} from "@/utils/utils";
-import {useChampionSpec, useChampionSpec2} from "@/core/hooks/useChampionSpec";
+import {useChampionSpec} from "@/core/hooks/useChampionSpec";
 
 export interface Props {
 
@@ -14,18 +20,21 @@ export const ChampionList = ({}: Props) => {
     const championList = useChampionList()
     const currentChampionSide = useReactiveVar(selectedChampionSide)
     const currentChampionState = useReactiveVar(selectedChampion)
-    const currentChampionStats = useReactiveVar(selectedChampionStats)
-    const { getSpecById } = useChampionSpec2()
+    const stats = useReactiveVar(selectedChampionStats)
+    const currentSelectedSkillList = useReactiveVar(selectedSkillList)
     const onClick = (e: any) => {
         const c = championList?.find((champion) => champion.id == e.target.id)
         if (c != null) {
             currentChampionState[currentChampionSide] = c
             selectedChampion([...currentChampionState])
+            selectedChampionStats([currentChampionState[RED_TEAM]?.stats, currentChampionState[BLUE_TEAM]?.stats])
+            currentSelectedSkillList[currentChampionSide] = []
+            selectedSkillList([...currentSelectedSkillList])
         }
     }
 
     const isSelected = (championId: string) => {
-        return currentChampionState[currentChampionSide].id === championId
+        return currentChampionState[currentChampionSide]?.id === championId
     }
 
     return (

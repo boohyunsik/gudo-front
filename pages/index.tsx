@@ -11,7 +11,7 @@ import {gql} from "@apollo/client";
 import {SkillListHolder} from "@/components/skill/skillListHolder";
 import {ChampionSelect} from "@/components/champion/championSelect";
 import {SelectedSkillHolder} from "@/components/skill/selectedSkillHolder";
-import {SpecHolder} from "@/components/spec/specHolder";
+import {SpecHolder} from "@/components/stats/specHolder";
 import {StatisticHolder} from "@/components/statistic/statisticHolder";
 
 const inter = Inter({ subsets: ['latin'] })

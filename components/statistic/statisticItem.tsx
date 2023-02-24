@@ -7,7 +7,6 @@ export interface Props {
 
 export const StatisticItem = ({ side }: Props) => {
     const selectedSkill = useReactiveVar(selectedSkillList)
-    console.log(side, selectedSkill)
     return (
         <>
         </>
