@@ -1,9 +1,9 @@
-import {useChampionAttackAndSkills} from "@/core/hooks/useChampionAttackAndSkills";
-import {useEffect, useState} from "react";
-import {DDRAGON_REST_URL, LOL_VERSION} from "@/utils/config";
+import { useChampionAttackAndSkills } from "@/core/hooks/useChampionAttackAndSkills";
+import { useState } from "react";
+import { LOL_VERSION } from "@/utils/config";
 import Image from "next/image";
-import {useSelectedSkillList} from "@/core/hooks/useSelectedSkillList";
-import {SelectedSkillHolder} from "@/components/skill/selectedSkillHolder";
+import { useSkill } from "@/core/hooks/useSkill";
+import { Tooltip } from "@material-tailwind/react";
 
 export interface Props {
   championId: string
@@ -13,8 +13,7 @@ export interface Props {
 
 export const SkillListHolder = ({ championId, championName, side }: Props) => {
   const championDetail = useChampionAttackAndSkills(championId)
-  const { addSkill } = useSelectedSkillList(side)
-  const [skills, setSkills] = useState<any[]>([null, null, null, null, null])
+  const { addSkill } = useSkill(side)
 
   const onClickSingleSkill = (e: any, index: number) => {
     if (index === 0) {
@@ -31,36 +30,53 @@ export const SkillListHolder = ({ championId, championName, side }: Props) => {
 
   return (
     <>
-      <div className={"grid grid-rows-1 grid-cols-5 sm:grid-cols-5 gap-1 content-start"}>
+        <div className={"grid grid-rows-1 grid-cols-6 sm:grid-cols-6 gap-1 content-start"}>
         {
           championDetail?.map((skill: any, index: number) => {
-            if (skill.type === 'attack') {
-              return (
-                <div key={0} className="cursor-pointer" onClick={e => onClickSingleSkill(e, 0)}>
-                  <Image
-                    className="rounded-md"
-                    src={`/ddragon/${LOL_VERSION}/img/item/1055.png`}
-                    width='48'
-                    height='48'
-                    loading='eager'
-                    priority
-                    alt={''}/>
-                </div>
-              )
+            switch (skill.type) {
+              case 'attack':
+                return (
+                    <Tooltip content="일반 공격" placement="bottom">
+                      <Image
+                          className="cursor-pointer rounded-md"
+                          src={`/ddragon/${LOL_VERSION}/img/item/1055.png`}
+                          width='48'
+                          height='48'
+                          loading='eager'
+                          priority
+                          onClick={e => onClickSingleSkill(e, index)}
+                          alt={''}/>
+                    </Tooltip>
+                )
+              case 'passive':
+                return (
+                    <Tooltip content={skill.data.name} placement="bottom">
+                      <Image
+                          className="cursor-pointer rounded-md"
+                          src={`/ddragon/${LOL_VERSION}/img/passive/${skill.data.image.full}`}
+                          width='48'
+                          height='48'
+                          loading='eager'
+                          priority
+                          onClick={e => onClickSingleSkill(e, index)}
+                          alt={''}/>
+                    </Tooltip>
+                )
+              default:
+                return (
+                    <Tooltip content={skill.data.name} placement="bottom">
+                      <Image
+                          className="cursor-pointer rounded-md"
+                          src={`/ddragon/${LOL_VERSION}/img/spell/${skill.data.image.full}`}
+                          width='48'
+                          height='48'
+                          loading='eager'
+                          priority
+                          onClick={e => onClickSingleSkill(e, index)}
+                          alt={''}/>
+                    </Tooltip>
+                )
             }
-
-            return (
-              <div key={index + 1} className='cursor-pointer' onClick={e => onClickSingleSkill(e, index)}>
-                <Image
-                  className="rounded-md"
-                  src={`/ddragon/${LOL_VERSION}/img/spell/${skill.data.image.full}`}
-                  width='48'
-                  height='48'
-                  loading='eager'
-                  priority
-                  alt={''}/>
-              </div>
-            )
           })
         }
       </div>

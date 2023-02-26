@@ -10,6 +10,8 @@ import {
 import {useReactiveVar} from "@apollo/client/react";
 import {useChampionList} from "@/core/hooks/useChampionList";
 import {getSquareImageUrl} from "@/utils/utils";
+import {Tooltip} from "@material-tailwind/react";
+import Image from "next/image";
 
 export interface Props {
 
@@ -20,8 +22,8 @@ export const ChampionList = ({}: Props) => {
     const currentChampionSide = useReactiveVar(selectedChampionSide)
     const currentChampionState = useReactiveVar(selectedChampion)
     const currentSelectedSkillList = useReactiveVar(selectedSkillList)
-    const onClick = (e: any) => {
-        const c = championList?.find((champion) => champion.id == e.target.id)
+    const onClick = (e: any, targetChampionId: string) => {
+        const c = championList?.find((champion) => champion.id === targetChampionId)
         if (c != null) {
             currentChampionState[currentChampionSide] = c
             selectedChampion([...currentChampionState])
@@ -32,15 +34,18 @@ export const ChampionList = ({}: Props) => {
     }
 
     const isSelected = (championId: string) => {
-        return currentChampionState[currentChampionSide]?.id === championId
+        return currentChampionState[0]?.id === championId || currentChampionState[1]?.id === championId
     }
 
     return (
       <div className="grid grid-cols-10 sm:grid-cols-10 gap-0 content-start gap-1 h-100 overflow-y-auto">
         {championList?.map((champion) => (
-          <div className={`cursor-pointer ${isSelected(champion.id) ? "grayscale" : ""}`} key={champion.id} onClick={onClick}>
-            <img id={champion.id} className="rounded-md w-20" src={getSquareImageUrl(champion.image.full)} alt="" />
-          </div>
+            <Tooltip content={champion.name} placement="bottom">
+                <Image className={`rounded-md cursor-pointer ${isSelected(champion.id) ? "grayscale" : ""}`}
+                       src={getSquareImageUrl(champion.image.full)}
+                       onClick={e => onClick(e, champion.id)}
+                       alt={''} width='80' height='80' />
+            </Tooltip>
         ))}
       </div>
     )

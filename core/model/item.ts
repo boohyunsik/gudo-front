@@ -12,6 +12,7 @@ export interface Item {
     into: string[]
     plaintext: string
     stats: any
+    depth: number
     tags: string[]
     image: {
         full: string

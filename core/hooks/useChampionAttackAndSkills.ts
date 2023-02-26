@@ -12,13 +12,17 @@ export const useChampionAttackAndSkills = (championName: string) => {
     return null
   }
 
-  const rawData = result.data.championDetail.data[championName].spells as any[]
-  const skills = rawData.map((skill) => {
+  const rawData = result.data.championDetail.data[championName]
+  const spells = rawData.spells as any[]
+  const skills = spells.map((skill) => {
     return {
       type: 'skill',
       data: skill
     }
   })
 
-  return [{ type: 'attack' }, ...skills]
+  return [
+      { type: 'attack' },
+      { type: 'passive', data: rawData.passive },
+      ...skills]
 }

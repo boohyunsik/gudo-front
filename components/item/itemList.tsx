@@ -1,13 +1,15 @@
-import {useItemList} from "@/core/hooks/useItemList";
+import {useItem, useItemList} from "@/core/hooks/useItemList";
 import Image from "next/image";
 import {LOL_VERSION} from "@/utils/config";
 import {useReactiveVar} from "@apollo/client/react";
 import {selectedChampionSide, selectedItemList} from "@/core/state/uiState";
+import {Tooltip} from "@material-tailwind/react";
 
 export const ItemList = () => {
     const itemList = useItemList()
     const currentSelectedSide = useReactiveVar(selectedChampionSide)
     const currentSelectedItem = useReactiveVar(selectedItemList)
+    const { addItem } = useItem(currentSelectedSide)
 
     const onClickItem = (e: any, item: any) => {
         currentSelectedItem[currentSelectedSide].push(item)
@@ -16,18 +18,21 @@ export const ItemList = () => {
     }
 
     return (
-        <div className="grid grid-cols-12 content-start gap-2">
+        <div className="grid grid-cols-12 content-start gap-1">
             {
-                itemList?.map((item) => {
+                itemList?.map((item, index) => {
                     return (
-                        <Image
-                            className="rounded-md border-4 border-black cursor-pointer"
-                            onClick={e => onClickItem(e, item)}
-                            src={`/ddragon/${LOL_VERSION}/img/item/${item.image.full}`}
-                            width='48'
-                            height='48'
-                            alt={''}
-                        />
+                        <Tooltip content={item.name} placement="bottom">
+                            <Image
+                                key={index}
+                                className={`rounded-md border-4 cursor-pointer ${item.depth === 4 ? "border-orange-700" : "border-black"}`}
+                                onClick={_ => addItem(item)}
+                                src={`/ddragon/${LOL_VERSION}/img/item/${item.image.full}`}
+                                width='64'
+                                height='64'
+                                alt={''}
+                            />
+                        </Tooltip>
                     )
                 })
             }
