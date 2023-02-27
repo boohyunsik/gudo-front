@@ -1,9 +1,10 @@
 import {useQuery} from "@apollo/client/react";
 import {ChampionList} from "@/core/apollo/query/champion";
 import {Champion} from "@/core/model/champion";
+import {ApiEndpoint} from "@/core/apollo/client";
 
 export const useChampionList = () => {
-  const result = useQuery(ChampionList)
+  const result = useQuery(ChampionList, { context: { clientName: ApiEndpoint.DATA_DRAGON } })
 
   if (!result.loading) {
     const data = result.data.champion.data

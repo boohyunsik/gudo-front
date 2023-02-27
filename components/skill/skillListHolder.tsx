@@ -33,6 +33,7 @@ export const SkillListHolder = ({ championId, championName, side }: Props) => {
         <div className={"grid grid-rows-1 grid-cols-6 sm:grid-cols-6 gap-1 content-start"}>
         {
           championDetail?.map((skill: any, index: number) => {
+            console.log('skill', skill)
             switch (skill.type) {
               case 'attack':
                 return (

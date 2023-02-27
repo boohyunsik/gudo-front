@@ -17,3 +17,11 @@ export const ChampionDetail = (championName: string) => gql`
     }
   }
 `
+
+export const CdragonChampionBinJson = (championName: string) => gql`
+  query CdragonChampion {
+    champion @rest(type: "ChampionDetail", path: "13.4/game/data/characters/${championName}/${championName}.bin.json") {
+        Characters%2FAatrox%2FSpells%2FAatroxRAbility
+    } 
+  }
+`

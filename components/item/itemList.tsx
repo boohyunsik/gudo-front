@@ -1,4 +1,4 @@
-import {useItem, useItemList} from "@/core/hooks/useItemList";
+import {useItem, useItemList} from "@/core/hooks/useItem";
 import Image from "next/image";
 import {LOL_VERSION} from "@/utils/config";
 import {useReactiveVar} from "@apollo/client/react";
@@ -10,12 +10,6 @@ export const ItemList = () => {
     const currentSelectedSide = useReactiveVar(selectedChampionSide)
     const currentSelectedItem = useReactiveVar(selectedItemList)
     const { addItem } = useItem(currentSelectedSide)
-
-    const onClickItem = (e: any, item: any) => {
-        currentSelectedItem[currentSelectedSide].push(item)
-        selectedItemList([...currentSelectedItem])
-        console.log('item', currentSelectedItem)
-    }
 
     return (
         <div className="grid grid-cols-12 content-start gap-1">

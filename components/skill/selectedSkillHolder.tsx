@@ -1,8 +1,7 @@
-import {useReactiveVar} from "@apollo/client/react";
-import {selectedSkillList} from "@/core/state/uiState";
 import Image from "next/image";
-import {DDRAGON_REST_URL, LOL_VERSION} from "@/utils/config";
-import {useSkill} from "@/core/hooks/useSkill";
+import { LOL_VERSION } from "@/utils/config";
+import { useSkill } from "@/core/hooks/useSkill";
+import { Tooltip } from "@material-tailwind/react";
 
 export const SelectedSkillHolder = ({ side }: any) => {
   const { selectedSkills, removeSkill } = useSkill(side)
@@ -25,11 +24,10 @@ export const SelectedSkillHolder = ({ side }: any) => {
             default:
               // TODO: error icon
           }
-
           return (
-              <div className='mr-2' key={`selected-skill-${index}`} onClick={e => removeSkill(index)}>
-                <Image className="cursor-pointer rounded-md" src={iconDir} alt={''} width='48' height='48' />
-              </div>
+              <Tooltip content={skill.data.name} placement="bottom">
+                <Image className="cursor-pointer rounded-md" src={iconDir} alt={''} width='48' height='48' onClick={e => removeSkill(index)} />
+              </Tooltip>
           )
         })
       }
