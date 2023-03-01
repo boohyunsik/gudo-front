@@ -38,10 +38,6 @@ export const useChampionBinJson = async (championId: string) => {
                     children.push(json[s])
                 })
 
-                console.log('index', index)
-                console.log('s', s)
-                console.log('children', children)
-
                 switch (index) {
                     case 2:
                         ret.q = children

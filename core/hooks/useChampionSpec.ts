@@ -11,7 +11,20 @@ export const useChampionSpec = (championName: string) => {
     useChampionBinJson(championName).then((bin) => {
         interpretSkillDescription(
             result.data.championDetail.data[championName].spells[0],
-            bin.q
+            bin.q,
+            {
+                // Attack
+                2: {
+                    // Base Attack
+                    0: 69,
+                    // Total Attack
+                    1: 82,
+                    // Bonus Attack
+                    2: 13
+                },
+                magic: 21
+            },
+            1
         )
     })
     if (result.error || result.loading) {
