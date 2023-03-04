@@ -1,87 +1,85 @@
 import xxHash64 from 'crypto-xxhash-64'
 import mustache from 'mustache'
 import Handlebars from 'handlebars'
+import {ChampionStats} from "@/core/model/champion";
+import {useChampionBinJson} from "@/core/hooks/useCommunitydragon";
+import {createTree} from "@/core/interpreter/tree";
+
+
+export const createSkillCalculation = async (champion: ChampionStats) => {
+    const bin = await useChampionBinJson(champion.name.toLowerCase())
+    const skillTree = createTree(champion.name, bin?.passive, bin?.q, bin?.w, bin?.e, bin?.r)
+
+}
 
 export const interpretSkillDescription = async (dataDragonSpellData: any,
                                                 cDragonChampionData: any,
                                                 currentChampionSpec: any,
                                                 skillLevel: number) => {
-    // console.log('originalTooltip', dataDragonSpellData)
-    // console.log('data', cDragonChampionData)
-
+    console.log('############################## Start Interpreting! ##########################################')
     // 1. Find mSpellCalculations
     const tooltip: string = dataDragonSpellData.tooltip
-    console.log('tooltip', tooltip)
     const item = cDragonChampionData.find((d: any) => d.mScriptName === dataDragonSpellData.id)
-    console.log('item', item)
     const spellData = item.mSpell
-    console.log('mSpell', spellData)
-
     const dataValues = spellData.mSpellCalculations
-    console.log('dataValues', dataValues)
     const keys = Object.keys(dataValues)
     const result: any = {}
     const dv: any[] = spellData.mDataValues
+    dv.forEach((current) => {
+        result[current.mName.toLowerCase()] = current.mValues[skillLevel]
+    })
 
     keys.forEach((k) => {
-        console.log('k', k)
         const data = dataValues[k]
-        console.log('data', data)
         const dataKeyList = Object.keys(data)
         dataKeyList.forEach((dk) => {
-            console.log('dk', dk)
             switch (dk) {
+                case 'mMultiplier':
+                    break
                 case 'mFormulaParts':
-                    console.log('value', data[dk])
                     const values = data[dk]
                     let damage = 0
                     values.forEach((v: any) => {
-                        console.log('value2', v['__type'])
                         const type = v['__type']
                         switch (type) {
+                            case 'ByCharLevelInterpolationCalculationPart':
+                                const startValue = v.mStartValue
+                                const endValue = v.mEndValue
+                                const champLevel = currentChampionSpec.level
+
+                                const increment = champLevel * (endValue - startValue) / 18
+                                damage += (startValue + increment * (champLevel - 1))
+                                break
                             case 'NamedDataValueCalculationPart':
-                                console.log('NamedDataValueCalculationPart', v.mDataValue)
                                 // FIND VALUE IN mDataValues FIELD
-                                console.log('dv', dv)
-                                console.log('find', v.mDataValue)
                                 const f = dv.find((d) => d.mName == v.mDataValue || v.mDataValue === getBinHash(d.mName))
                                 if (f != null) {
-                                    console.log('f', f)
                                     const calcResult = f.mValues[skillLevel]
-                                    console.log('calcResult', calcResult)
                                     damage += calcResult
                                 }
                                 break
                             case 'StatByCoefficientCalculationPart':
-                                console.log('StatByCoefficientCalculationPart, stat', v.mStat)
-                                console.log('StatByCoefficientCalculationPart, coeffi', v.mCoefficient)
-                                const stat = currentChampionSpec[v.mStat][v.mStatFormula || 1]
+                                const stat = currentChampionSpec[v.mStat || 'magic'][v.mStatFormula || 1]
                                 const damageResult = stat * v.mCoefficient
                                 damage += damageResult
-                                console.log('calcResult of StatByCoefficientCalculationPart', damageResult)
                                 break
                             case 'StatByNamedDataValueCalculationPart':
-                                console.log('StatByNamedDataValueCalculationPart', v.mStat)
                                 const find = dv.find((d) => d.mName == v.mDataValue || v.mDataValue === getBinHash(d.mName))
-                                console.log("StatByNamedDataValueCalculationPart, find", find)
-                                console.log("StatByNamedDataValueCalculationPart, v", v)
                                 if (find != null) {
                                     if (v.mStat == null) {
                                         // magic
-                                        damage += Math.round((find.mValues[skillLevel] * currentChampionSpec['magic']))
+                                        damage += Math.round((find.mValues[skillLevel] * currentChampionSpec['magic'][v.mStatFormula || 1]))
                                     } else {
                                         damage += Math.round((find.mValues[skillLevel] * currentChampionSpec[v.mStat][v.mStatFormula]))
                                     }
                                 }
                                 break
                             case 'EffectValueCalculationPart':
-                                console.log('EffectValueCalculationPart', v.mStat)
                                 const ea: any[] = spellData.mEffectAmount
-                                console.log('ea', ea)
-                                console.log('effectIndex', v.mEffectIndex)
                                 const effectAmount = ea[parseInt(v.mEffectIndex) - 1].value[skillLevel]
-                                console.log('effectAmount', effectAmount)
                                 damage += effectAmount
+                                break
+                            case 'AbilityResourceByCoefficientCalculationPart':
                                 break
                         }
                     })
@@ -91,17 +89,14 @@ export const interpretSkillDescription = async (dataDragonSpellData: any,
         })
     })
 
-    const mDataValue: any[] = spellData.mEffectAmount
-    mDataValue.forEach((v, index) => {
+    const effectAmount: any[] = spellData.mEffectAmount
+    effectAmount?.forEach((v, index) => {
         if (v.value != null) {
             result[`e${index+1}`] = v.value[skillLevel]
         }
     })
 
     const tooltipKey = spellData.mClientData.mTooltipData.mLocKeys.keyTooltip.toLowerCase()
-    console.log('tooltipKey', tooltipKey)
-    console.log('result', result)
-
     interpretTooltip(tooltip, result)
 }
 
@@ -118,14 +113,13 @@ export interface TooltipWrapper {
     type: string
 }
 
-const getBinHash = (data: string) => {
+export const getBinHash = (data: string) => {
     let h = BigInt(0x811c9dc5)
     const lower = data.toLowerCase()
     for (let i = 0; i < lower.length; i++) {
         let b = BigInt(lower.charCodeAt(i))
         h = ((h ^ b) * BigInt(0x01000193)) % BigInt(0x100000000)
     }
-    console.log('getBinHash: ', `{${h.toString(16)}}`)
     return `{${h.toString(16)}}`
 }
 

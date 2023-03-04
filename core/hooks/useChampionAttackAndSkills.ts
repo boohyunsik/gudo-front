@@ -1,6 +1,7 @@
 import {useQuery} from "@apollo/client/react";
 import {ChampionDetail} from "@/core/apollo/query/champion";
 import {ApiEndpoint} from "@/core/apollo/client";
+import {spellFromData} from "@/core/model/skill";
 
 export const useChampionAttackAndSkills = (championName: string) => {
   const result = useQuery(ChampionDetail(championName), { fetchPolicy: 'no-cache', context: { clientName: ApiEndpoint.DATA_DRAGON }})

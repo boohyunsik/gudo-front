@@ -4,6 +4,7 @@ import { LOL_VERSION } from "@/utils/config";
 import Image from "next/image";
 import { useSkill } from "@/core/hooks/useSkill";
 import { Tooltip } from "@material-tailwind/react";
+import {calculateChampionSpec} from "@/core/engine/specCalculator";
 
 export interface Props {
   championId: string
@@ -13,6 +14,8 @@ export interface Props {
 
 export const SkillListHolder = ({ championId, championName, side }: Props) => {
   const championDetail = useChampionAttackAndSkills(championId)
+  const spec = calculateChampionSpec(championName, 1)
+
   const { addSkill } = useSkill(side)
 
   const onClickSingleSkill = (e: any, index: number) => {
@@ -33,7 +36,6 @@ export const SkillListHolder = ({ championId, championName, side }: Props) => {
         <div className={"grid grid-rows-1 grid-cols-6 sm:grid-cols-6 gap-1 content-start"}>
         {
           championDetail?.map((skill: any, index: number) => {
-            console.log('skill', skill)
             switch (skill.type) {
               case 'attack':
                 return (

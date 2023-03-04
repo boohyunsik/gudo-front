@@ -1,8 +1,15 @@
-import {useChampionSpec} from "@/core/hooks/useChampionSpec";
-import {ChampionSpec} from "@/core/model/champion";
-import {selectedChampionStats, selectedItemList, selectedLevel} from "@/core/state/uiState";
+import {
+    championWrapperState,
+    selectedChampionStatFormula,
+    selectedChampionStats,
+    selectedItemList,
+    selectedLevel
+} from "@/core/state/uiState";
 import {useReactiveVar} from "@apollo/client/react";
 import {calculateSpec, Spec} from "@/core/engine/calculator";
+import {calculateChampionSpec} from "@/core/engine/specCalculator";
+import {StatFormulaType, StatType} from "@/core/interpreter/constants";
+import {ChampionWrapper} from "@/core/model/champion";
 
 export interface Props {
     side: number
@@ -10,19 +17,25 @@ export interface Props {
 }
 
 export const SpecItem = ({ side, championName }: Props) => {
-    const championSpec: ChampionSpec | null = useChampionSpec(championName)
+    // const championSpec: ChampionSpec | null = useChampionSpec(championName)
+    const c = useReactiveVar(selectedChampionStatFormula)[side]
     const currentSelectedLevel = useReactiveVar(selectedLevel)
     const currentStat = useReactiveVar(selectedChampionStats)[side]
     const currentItem = useReactiveVar(selectedItemList)[side]
+
+    const currentChamp: ChampionWrapper = useReactiveVar<ChampionWrapper[]>(championWrapperState)[side]
+    const stat = currentChamp.getCurrentStat()
 
     const onLevelChanged = (e: any) => {
         if (e.target.value === 0 || e.target.value === '') {
             currentSelectedLevel[side] = 1
             selectedLevel([...currentSelectedLevel])
+            currentChamp.level = 1
             return
         }
         currentSelectedLevel[side] = e.target.value
         selectedLevel([...currentSelectedLevel])
+        currentChamp.level = e.target.value
     }
 
     return (
@@ -36,40 +49,40 @@ export const SpecItem = ({ side, championName }: Props) => {
                         </div>
                         <div className="grid grid-cols-2">
                             <div>
-                                hp: { calculateSpec(currentStat.hp, currentStat.hpPerLevel, currentSelectedLevel[side], currentItem, Spec.HP) }
+                                hp: { stat?.values.get(StatType.MaxHealth)?.toFixed(1) || 0 }
                             </div>
                             <div>
                                 mp: { calculateSpec(currentStat.mp, currentStat.mpPerLevel, currentSelectedLevel[side], currentItem, Spec.MP) }
                             </div>
                             <div>
-                                공격력: { calculateSpec(currentStat.attackDamage, currentStat.attackDamagePerLevel, currentSelectedLevel[side], currentItem, Spec.ATTACK) }
+                                공격력: { stat?.values.get(StatType.Attack)?.toFixed(1) || 0 }
                             </div>
                             <div>
-                                주문력: { calculateSpec(0, 0, currentSelectedLevel[side], currentItem, Spec.MAGIC) }
+                                주문력: { stat?.values.get(StatType.AbilityPower)?.toFixed(1) || 0 }
                             </div>
                             <div>
-                                방어력: { calculateSpec(currentStat.armor, currentStat.armorPerLevel, currentSelectedLevel[side], currentItem, Spec.ARMOR) }
+                                방어력: { stat?.values.get(StatType.Armor)?.toFixed(1) || 0 }
                             </div>
                             <div>
-                                마법저항력: { calculateSpec(currentStat.spellBlock, currentStat.spellBlockPerLevel, currentSelectedLevel[side], currentItem, Spec.SPELL_BLOCK) }
+                                마법저항력: { stat?.values.get(StatType.MagicResist)?.toFixed(1) || 0 }
                             </div>
                             <div>
-                                레벨 당 공격력: { currentStat.attackDamagePerLevel }
+                                레벨 당 공격력: { stat?.values.get(StatType.DamagePerLevel)?.toFixed(1) || 0 }
                             </div>
                             <div>
-                                레벨 당 방어력: { currentStat.armorPerLevel }
+                                레벨 당 방어력: { stat?.values.get(StatType.ArmorPerLevel)?.toFixed(1) || 0 }
                             </div>
                             <div>
-                                레벨 당 마법저항력: { currentStat.spellBlockPerLevel }
+                                레벨 당 마법저항력: { stat?.values.get(StatType.SpellBlockPerLevel)?.toFixed(1) || 0 }
                             </div>
                             <div>
-                                성장 체력: { currentStat.hpPerLevel }
+                                성장 체력: { stat?.values.get(StatType.HpPerLevel)?.toFixed(1) || 0 }
                             </div>
                             <div>
-                                5초당 체력 회복: { currentStat.hpRegen }
+                                5초당 체력 회복: { stat?.values.get(StatType.HealthRegenRate)?.toFixed(1) || 0 }
                             </div>
                             <div>
-                                성장 체력 회복: { currentStat.hpRegenPerLevel }
+                                성장 체력 회복: { stat?.values.get(StatType.HpRegenPerLevel)?.toFixed(1) || 0 }
                             </div>
                         </div>
                     </>)

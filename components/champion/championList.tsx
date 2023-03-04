@@ -1,9 +1,9 @@
 import * as React from 'react';
 import {
-    BLUE_TEAM,
+    BLUE_TEAM, championWrapperState, fontConfig,
     RED_TEAM,
     selectedChampion,
-    selectedChampionSide,
+    selectedChampionSide, selectedChampionStatFormula,
     selectedChampionStats,
     selectedSkillList
 } from "@/core/state/uiState";
@@ -12,6 +12,8 @@ import {useChampionList} from "@/core/hooks/useChampionList";
 import {getSquareImageUrl} from "@/utils/utils";
 import {Tooltip} from "@material-tailwind/react";
 import Image from "next/image";
+import {calculateChampionSpecWithBoneData} from "@/core/engine/specCalculator";
+import {useChampion} from "@/core/hooks/useChampionSpec";
 
 export interface Props {
 
@@ -22,14 +24,34 @@ export const ChampionList = ({}: Props) => {
     const currentChampionSide = useReactiveVar(selectedChampionSide)
     const currentChampionState = useReactiveVar(selectedChampion)
     const currentSelectedSkillList = useReactiveVar(selectedSkillList)
-    const onClick = (e: any, targetChampionId: string) => {
+    const font = useReactiveVar(fontConfig)
+
+    const championState = useReactiveVar(championWrapperState)
+
+    const onClick = async (e: any, targetChampionId: string) => {
         const c = championList?.find((champion) => champion.id === targetChampionId)
         if (c != null) {
+
+            // useChampion(
+            //     currentChampionState[currentChampionSide]?.id || '',
+            //     currentChampionState[currentChampionSide]?.name || '',
+            //     font).then((champion) => {
+            //     console.log('##### RESULT OF CDRAGON CHAMPION #####', champion)
+            //     // championState[currentChampionSide] = r
+            //     // championWrapperState([...championState])
+            // })
+            const cc = await useChampion(c.id, c.name, font)
+
+            console.log('cc', cc)
             currentChampionState[currentChampionSide] = c
             selectedChampion([...currentChampionState])
             selectedChampionStats([currentChampionState[RED_TEAM]?.stats, currentChampionState[BLUE_TEAM]?.stats])
+            selectedChampionStatFormula([calculateChampionSpecWithBoneData(currentChampionState[RED_TEAM]?.stats, 1), currentChampionState[BLUE_TEAM]?.stats])
             currentSelectedSkillList[currentChampionSide] = []
             selectedSkillList([...currentSelectedSkillList])
+
+            championState[currentChampionSide] = cc
+            championWrapperState([...championState])
         }
     }
 

@@ -24,7 +24,6 @@ export const useItem = (team: number) => {
     const currentSelectedItem = useReactiveVar(selectedItemList)
 
     const addItem = (item: Item) => {
-        console.log(item)
         if (currentSelectedItem[team].length === 6) {
             return
         }

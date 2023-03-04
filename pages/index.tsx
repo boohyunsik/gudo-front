@@ -6,7 +6,7 @@ import { ChampionThumbnailHolder } from '@/components/champion/championThumbnali
 import { ChampionList } from '@/components/champion/championList'
 import {ApolloProvider, useQuery, useReactiveVar} from '@apollo/client/react'
 import client from '@/core/apollo/client'
-import {BLUE_TEAM, RED_TEAM, selectedChampion, selectedChampionSide} from '@/core/state/uiState'
+import {BLUE_TEAM, fontConfig, RED_TEAM, selectedChampion, selectedChampionSide} from '@/core/state/uiState'
 import {gql} from "@apollo/client";
 import {SkillListHolder} from "@/components/skill/skillListHolder";
 import {ChampionSelect} from "@/components/champion/championSelect";
@@ -14,6 +14,7 @@ import {SelectedSkillHolder} from "@/components/skill/selectedSkillHolder";
 import {SpecHolder} from "@/components/stats/specHolder";
 import {StatisticHolder} from "@/components/statistic/statisticHolder";
 import {ItemSelectHolder} from "@/components/item/itemSelectHolder";
+import {useFontConfig} from "@/core/hooks/useFontConfig";
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -40,6 +41,8 @@ function classNames(...classes: any[]) {
 export default function Home() {
   const selectedTeam = useReactiveVar(selectedChampionSide)
   const currentChampion = useReactiveVar(selectedChampion)
+
+  const fontFromApi = useFontConfig()
 
   return (
     <>
